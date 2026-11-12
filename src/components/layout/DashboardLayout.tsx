@@ -37,14 +37,10 @@ export default function DashboardLayout({
         .eq("id", user.id)
         .single();
 
-      console.log("USER ID:", user.id);
-      console.log("PROFILE DATA:", data);
-      console.log("PROFILE ERROR:", error);
-
       if (!isMounted) return;
 
       if (!error && data) {
-        setFullName(data.full_name || user.email?.split("@")[0] || "Pengguna");
+        setFullName(data.full_name?.trim() || "Nama belum tersedia");
 
         if (data.role === "admin" || data.role === "member") {
           setRole(data.role);

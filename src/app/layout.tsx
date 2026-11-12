@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
@@ -21,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className}>
+        {children}{" "}
+        <Toaster position="top-right" richColors closeButton duration={3500} />
+      </body>
     </html>
   );
 }

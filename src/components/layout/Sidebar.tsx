@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 import {
   LayoutDashboard,
   GraduationCap,
@@ -44,6 +47,8 @@ const menuItems = [
 
 export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const sidebarTheme = dark
     ? "border-[#33334b] bg-[#202033] text-white"
@@ -54,6 +59,25 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+    const supabase = createClient();
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      toast.error("Logout gagal. Silakan coba kembali.");
+      setLoggingOut(false);
+      return;
+    }
+
+    onClose();
+    router.replace("/login");
+    router.refresh();
   };
 
   return (
@@ -85,7 +109,6 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
             </div>
           </div>
 
-          {/* CLOSE MOBILE MENU */}
           <button
             type="button"
             onClick={onClose}
@@ -123,7 +146,6 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
                 >
                   <Icon size={19} />
                   {item.name}
-
                   {active && <ChevronRight size={16} className="ml-auto" />}
                 </Link>
               );
@@ -155,14 +177,12 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
         <div className="mt-auto pt-8">
           <button
             type="button"
-            onClick={() => {
-              onClose();
-              // Logout akan dihubungkan ke Supabase Auth.
-            }}
-            className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition hover:text-red-500 ${muted}`}
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 ${muted}`}
           >
             <LogOut size={19} />
-            Logout
+            {loggingOut ? "Sedang Logout..." : "Logout"}
           </button>
         </div>
       </aside>
