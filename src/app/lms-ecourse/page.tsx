@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import {
@@ -234,6 +235,47 @@ function ColorField({ label, value, onChange }: ColorFieldProps) {
 
 export default function LMSEcoursePage() {
   const router = useRouter();
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [roleLoading, setRoleLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkUserRole() {
+      const supabase = createClient();
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        if (active) {
+          setIsAdmin(false);
+          setRoleLoading(false);
+        }
+        return;
+      }
+
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (active) {
+        setIsAdmin(!error && profile?.role === "admin");
+        setRoleLoading(false);
+      }
+    }
+
+    checkUserRole();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const [dark, setDark] = useState(false);
   const [search, setSearch] = useState("");
@@ -516,23 +558,25 @@ export default function LMSEcoursePage() {
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setShowCategoryManager(true)}
-                className="flex items-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-3 text-xs font-semibold text-violet-700 transition hover:bg-violet-50"
-              >
-                <Settings2 size={16} />
-                Kelola Kategori
-              </button>
+            {!roleLoading && isAdmin && (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setShowCategoryManager(true)}
+                  className="flex items-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-3 text-xs font-semibold text-violet-700 transition hover:bg-violet-50"
+                >
+                  <Settings2 size={16} />
+                  Kelola Kategori
+                </button>
 
-              <button
-                onClick={() => setShowAddCourse(true)}
-                className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-xs font-semibold text-white shadow-md shadow-violet-200/40 transition hover:bg-violet-700"
-              >
-                <Plus size={17} />
-                Tambah Kelas
-              </button>
-            </div>
+                <button
+                  onClick={() => setShowAddCourse(true)}
+                  className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-xs font-semibold text-white shadow-md shadow-violet-200/40 transition hover:bg-violet-700"
+                >
+                  <Plus size={17} />
+                  Tambah Kelas
+                </button>
+              </div>
+            )}
           </div>
 
           {/* SEARCH */}
@@ -682,7 +726,7 @@ export default function LMSEcoursePage() {
         </section>
 
         {/* CATEGORY MANAGER */}
-        {showCategoryManager && (
+        {isAdmin && showCategoryManager && (
           <div
             className="fixed inset-0 z-[220] flex items-center justify-center bg-black/60 p-3 sm:p-5"
             onClick={() => setShowCategoryManager(false)}
@@ -1059,7 +1103,7 @@ export default function LMSEcoursePage() {
         )}
 
         {/* ADD COURSE MODAL */}
-        {showAddCourse && (
+        {isAdmin && showAddCourse && (
           <div
             className="fixed inset-0 z-[210] flex items-center justify-center bg-black/60 p-4"
             onClick={() => setShowAddCourse(false)}
