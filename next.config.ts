@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+
+  // Mengizinkan akses development dari IP lokal
+  allowedDevOrigins: ["192.168.0.119"],
+
   turbopack: {
     rules: {
       "*.css": {
