@@ -239,10 +239,13 @@ export default function ProdukMRRPage() {
 
   // Link non-Google Drive dihitung satu item per produk.
   // File dan folder Google Drive sudah dihitung oleh Apps Script.
+
   const nonDriveLinkCount = products.filter((product) => {
     const link = product.product_link?.trim();
-    return Boolean(link) && !link.includes("drive.google.com");
+    return !!link && !link.includes("drive.google.com");
   }).length;
+
+  const totalProductResources = driveFileTotal + nonDriveLinkCount;
 
   const totalProductResources = driveFileTotal + nonDriveLinkCount;
 
