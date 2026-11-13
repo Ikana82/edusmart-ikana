@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import AppFooter from "@/components/layout/AppFooter";
 import { createClient } from "@/lib/supabase/client";
 import {
   GraduationCap,
@@ -24,7 +25,7 @@ const courses = [
     subtitle: "Memahami dasar kecerdasan buatan",
     lessons: 16,
     progress: 75,
-    color: "bg-violet-100 text-violet-600",
+    color: "bg-[var(--theme-soft)] text-[var(--theme-primary)]",
     icon: Sparkles,
   },
   {
@@ -32,7 +33,7 @@ const courses = [
     subtitle: "Belajar membangun AI Tools",
     lessons: 14,
     progress: 35,
-    color: "bg-blue-100 text-blue-600",
+    color: "bg-[var(--theme-soft)] text-[var(--theme-primary)]",
     icon: Wrench,
   },
   {
@@ -40,7 +41,7 @@ const courses = [
     subtitle: "Membangun website profesional",
     lessons: 12,
     progress: 0,
-    color: "bg-emerald-100 text-emerald-600",
+    color: "bg-[var(--theme-soft)] text-[var(--theme-primary)]",
     icon: ChartNoAxesCombined,
   },
 ];
@@ -200,25 +201,25 @@ export default function DashboardPage() {
       label: "Total Kelas",
       value: stats.classes,
       icon: BookOpen,
-      color: "bg-violet-100 text-violet-600",
+      color: "bg-[var(--theme-soft)] text-[var(--theme-primary)]",
     },
     {
       label: "Video Pembelajaran",
       value: stats.videos,
       icon: PlayCircle,
-      color: "bg-blue-100 text-blue-600",
+      color: "bg-[var(--theme-soft)] text-[var(--theme-primary)]",
     },
     {
       label: "Total Materi",
       value: stats.materials,
       icon: CheckCircle2,
-      color: "bg-emerald-100 text-emerald-600",
+      color: "bg-[var(--theme-soft)] text-[var(--theme-primary)]",
     },
     {
       label: "Total AI Tools",
       value: stats.tools,
       icon: Wrench,
-      color: "bg-orange-100 text-orange-600",
+      color: "bg-[var(--theme-soft)] text-[var(--theme-primary)]",
     },
   ];
 
@@ -226,7 +227,13 @@ export default function DashboardPage() {
     <DashboardLayout dark={dark} setDark={setDark}>
       <div className="mx-auto w-full max-w-363 space-y-6 p-4 sm:p-6 lg:space-y-7 lg:p-9">
         {/* WELCOME BANNER */}
-        <section className="relative overflow-hidden rounded-3xl bg-linear-to-r from-violet-700 via-violet-600 to-indigo-500 p-7 text-white md:p-10">
+        <section
+          className="relative overflow-hidden rounded-3xl p-7 text-white md:p-10"
+          style={{
+            background:
+              "linear-gradient(110deg, var(--theme-primary), var(--theme-secondary))",
+          }}
+        >
           <div className="relative z-10 max-w-xl">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur">
               <Sparkles size={14} />
@@ -237,14 +244,15 @@ export default function DashboardPage() {
               Selamat Datang di Edusmart!
             </h2>
 
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-violet-100 md:text-base">
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-white/90 md:text-base">
               Tempat belajar, mengembangkan kreativitas, dan membangun masa
               depan sebagai digital creator.
             </p>
 
             <a
               href="/lms-ecourse"
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-violet-700 transition hover:bg-violet-50"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold transition hover:bg-white/90"
+              style={{ color: "var(--theme-primary)" }}
             >
               Mulai Belajar <ArrowRight size={16} />
             </a>
@@ -288,7 +296,7 @@ export default function DashboardPage() {
 
             <a
               href="/lms-ecourse"
-              className="flex shrink-0 items-center gap-1 text-sm font-semibold text-violet-600"
+              className="flex shrink-0 items-center gap-1 text-sm font-semibold text-[var(--theme-primary)]"
             >
               Lihat Semua <ArrowRight size={15} />
             </a>
@@ -315,7 +323,7 @@ export default function DashboardPage() {
 
                   <div className={`mt-4 flex justify-between text-xs ${muted}`}>
                     <span>{course.lessons} Materi</span>
-                    <span className="font-bold text-violet-600">
+                    <span className="font-bold text-[var(--theme-primary)]">
                       {course.progress}%
                     </span>
                   </div>
@@ -326,7 +334,7 @@ export default function DashboardPage() {
                     }`}
                   >
                     <div
-                      className="h-full rounded-full bg-violet-600"
+                      className="h-full rounded-full bg-[var(--theme-primary)]"
                       style={{ width: `${course.progress}%` }}
                     />
                   </div>
@@ -335,8 +343,8 @@ export default function DashboardPage() {
                     href="/lms-ecourse"
                     className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition ${
                       dark
-                        ? "bg-[#30304a] text-white hover:bg-violet-600"
-                        : "bg-violet-50 text-violet-700 hover:bg-violet-600 hover:text-white"
+                        ? "bg-[#30304a] text-white hover:brightness-110"
+                        : "bg-[var(--theme-soft)] text-[var(--theme-primary)] hover:brightness-95 hover:text-[var(--theme-primary)]"
                     }`}
                   >
                     {course.progress === 0
@@ -363,7 +371,7 @@ export default function DashboardPage() {
               <div className="flex-1 space-y-5">
                 {paginatedActivities.map((item) => (
                   <div key={item.title} className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--theme-soft)] text-[var(--theme-primary)]">
                       <item.icon size={19} />
                     </div>
 
@@ -407,7 +415,8 @@ export default function DashboardPage() {
                       }
                       disabled={activityPage === totalActivityPages}
                       aria-label="Halaman berikutnya"
-                      className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7C3AED] text-white transition hover:bg-[#6D28D9] disabled:cursor-not-allowed disabled:opacity-40"
+                      className="flex h-9 w-9 items-center justify-center rounded-lg text-white transition hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-40"
+                      style={{ backgroundColor: "var(--theme-primary)" }}
                     >
                       <ChevronRight size={17} />
                     </button>
@@ -420,12 +429,12 @@ export default function DashboardPage() {
           {/* PROFIL PENGGUNA - DATA DARI SUPABASE AUTH */}
           <div className={`rounded-2xl border p-6 ${card}`}>
             <div className="flex items-center gap-2">
-              <Users size={20} className="text-violet-600" />
+              <Users size={20} className="text-[var(--theme-primary)]" />
               <h3 className="text-base font-bold">Profil Pengguna</h3>
             </div>
 
             <div className="mt-6 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-violet-100 text-2xl font-bold uppercase text-violet-700">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--theme-soft)] text-2xl font-bold uppercase text-[var(--theme-primary)]">
                 {profileLoading ? "…" : userProfile.name.charAt(0) || "?"}
               </div>
 
@@ -445,10 +454,12 @@ export default function DashboardPage() {
 
             <div
               className={`mt-6 rounded-xl p-4 ${
-                dark ? "bg-[#30304a]" : "bg-violet-50"
+                dark ? "bg-[#30304a]" : "bg-[var(--theme-soft)]"
               }`}
             >
-              <p className="text-sm font-bold text-violet-600">Akun Edusmart</p>
+              <p className="text-sm font-bold text-[var(--theme-primary)]">
+                Akun Edusmart
+              </p>
 
               <div className="mt-3 flex items-center justify-between">
                 <span className={`text-xs ${muted}`}>Status akun</span>
@@ -464,14 +475,7 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* FOOTER */}
-        <footer
-          className={`border-t pt-5 text-center text-xs ${
-            dark ? "border-[#33334b]" : "border-gray-200"
-          } ${muted}`}
-        >
-          © 2026 Edusmart by Ikanuraisma. All rights reserved.
-        </footer>
+        <AppFooter dark={dark} />
       </div>
 
       {/* FLOATING WHATSAPP BUTTON */}

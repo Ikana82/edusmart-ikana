@@ -70,7 +70,7 @@ export default function FormModal({
             <button
               type="submit"
               disabled={isLoading}
-              className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl bg-[var(--theme-primary)] px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? loadingLabel : submitLabel}
             </button>

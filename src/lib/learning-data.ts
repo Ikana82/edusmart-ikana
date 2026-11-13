@@ -2,7 +2,7 @@ export type MaterialType = "video" | "pdf" | "article" | "link";
 export type MaterialStatus = "draft" | "published";
 
 export type LearningMaterial = {
-  id: number;
+  id: string | number;
   title: string;
   type: MaterialType;
   duration?: string;
@@ -14,7 +14,7 @@ export type LearningMaterial = {
 };
 
 export type LearningModule = {
-  id: number;
+  id: string | number;
   title: string;
   materials: LearningMaterial[];
 };

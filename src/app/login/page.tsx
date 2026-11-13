@@ -49,7 +49,7 @@ export default function LoginPage() {
     <main className="fixed inset-0 h-[100dvh] w-full overflow-hidden bg-white">
       <div className="grid h-full w-full grid-cols-1 overflow-hidden bg-white lg:grid-cols-2">
         {/* PANEL KIRI - DESKTOP SAJA */}
-        <section className="relative hidden h-full min-w-0 items-center justify-center overflow-hidden bg-gradient-to-br from-[#625cff] via-[#7548f5] to-[#9565ff] p-8 text-white lg:flex xl:p-12">
+        <section className="relative hidden h-full min-w-0 items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--theme-primary)] via-[var(--theme-secondary)] to-[var(--theme-primary)] p-8 text-white lg:flex xl:p-12">
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
           <div className="absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-indigo-300/20 blur-2xl" />
 
@@ -115,7 +115,7 @@ export default function LoginPage() {
           <div className="my-auto w-full max-w-md py-5">
             {/* LOGO */}
             <div className="mb-5 flex items-center justify-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-500 text-white shadow-md shadow-violet-200">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-secondary)] text-white shadow-md shadow-violet-200">
                 <GraduationCap size={25} />
               </div>
 
@@ -206,7 +206,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 text-sm font-bold text-white shadow-lg shadow-violet-200 transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-sm font-bold text-white shadow-lg shadow-violet-200 transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? (
                   <>

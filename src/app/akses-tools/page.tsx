@@ -7,6 +7,7 @@ import dynamicIconImports from "lucide-react/dynamicIconImports";
 import type { IconName } from "lucide-react/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import AppFooter from "@/components/layout/AppFooter";
 import FormModal from "@/components/ui/FormModal";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
@@ -414,7 +415,7 @@ export default function AksesToolsPage() {
           </div>
 
           {/* Hero */}
-          <div className="rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-6 text-white md:p-8">
+          <div className="rounded-3xl bg-gradient-to-r from-[var(--theme-primary)] via-[var(--theme-secondary)] to-[var(--theme-primary)] p-6 text-white md:p-8">
             <div className="max-w-2xl">
               <div className="mb-3 flex items-center gap-2 text-sm text-violet-100">
                 <Sparkles size={18} />
@@ -692,7 +693,7 @@ export default function AksesToolsPage() {
                       href={tool.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#7C3AED] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#6D28D9] hover:shadow-md ${
+                      className={`flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--theme-primary)] px-4 py-2.5 text-[13px] font-bold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:brightness-90 hover:shadow-md ${
                         view === "grid"
                           ? "mt-5 w-full"
                           : "w-full whitespace-nowrap sm:w-40"
@@ -707,6 +708,9 @@ export default function AksesToolsPage() {
               })}
             </div>
           )}
+        </div>
+        <div className="mt-8">
+          <AppFooter dark={dark} />
         </div>
       </div>
 
@@ -845,7 +849,7 @@ export default function AksesToolsPage() {
                   status: e.target.value as "active" | "inactive",
                 })
               }
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 pb-10 text-sm"
             >
               <option value="active">Aktif</option>
               <option value="inactive">Nonaktif</option>

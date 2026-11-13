@@ -75,6 +75,7 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
       return;
     }
 
+    document.documentElement.dataset.theme = "purple";
     onClose();
     router.replace("/login");
     router.refresh();
@@ -82,7 +83,6 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* MOBILE OVERLAY */}
       {mobileMenu && (
         <div
           onClick={onClose}
@@ -90,13 +90,11 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
         />
       )}
 
-      {/* SIDEBAR */}
       <aside
-        className={`fixed inset-y-0 left-0 z-[100] flex w-[260px] flex-col overflow-y-auto border-r p-5 shadow-xl transition-transform duration-300 ease-in-out ${sidebarTheme} ${
+        className={`fixed inset-y-0 left-0 z-[100] flex w-[260px] flex-col overflow-y-auto border-r p-5 shadow-lg transition-transform duration-300 ease-in-out ${sidebarTheme} ${
           mobileMenu ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        {/* LOGO */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white">
@@ -119,7 +117,6 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
           </button>
         </div>
 
-        {/* MAIN MENU */}
         <div className="mt-10">
           <p
             className={`mb-4 px-3 text-[10px] font-bold uppercase tracking-[2px] ${muted}`}
@@ -140,7 +137,7 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
                   aria-current={active ? "page" : undefined}
                   className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                     active
-                      ? "bg-violet-600 text-white shadow-lg shadow-violet-200/40"
+                      ? "bg-violet-600 text-white"
                       : `${muted} hover:bg-violet-50 hover:text-violet-600`
                   }`}
                 >
@@ -153,7 +150,6 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
           </nav>
         </div>
 
-        {/* PREFERENCES */}
         <div className="mt-9">
           <p
             className={`mb-4 px-3 text-[10px] font-bold uppercase tracking-[2px] ${muted}`}
@@ -173,7 +169,6 @@ export default function Sidebar({ dark, mobileMenu, onClose }: SidebarProps) {
           </Link>
         </div>
 
-        {/* LOGOUT */}
         <div className="mt-auto pt-8">
           <button
             type="button"

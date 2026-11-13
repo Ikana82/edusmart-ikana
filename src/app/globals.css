@@ -3,10 +3,19 @@
 :root {
   --background: #f7f8fc;
   --foreground: #25263a;
+  --theme-primary: #7c3aed;
+  --theme-secondary: #8b5cf6;
+  --theme-soft: #f3e8ff;
+  --theme-selection: #ded6ff;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
@@ -16,11 +25,250 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.lms-soft-borders .border {
+  border-color: #e5e7eb;
+}
+
 button {
   cursor: pointer;
 }
 
+/* Palet tema Edusmart */
+html[data-theme="purple"] {
+  --theme-primary: #7c3aed;
+  --theme-secondary: #8b5cf6;
+  --theme-soft: #f3e8ff;
+  --theme-selection: #ded6ff;
+}
+
+html[data-theme="blue"] {
+  --theme-primary: #2563eb;
+  --theme-secondary: #3b82f6;
+  --theme-soft: #dbeafe;
+  --theme-selection: #bfdbfe;
+}
+
+html[data-theme="pink"] {
+  --theme-primary: #db2777;
+  --theme-secondary: #ec4899;
+  --theme-soft: #fce7f3;
+  --theme-selection: #fbcfe8;
+}
+
+html[data-theme="green"] {
+  --theme-primary: #059669;
+  --theme-secondary: #10b981;
+  --theme-soft: #d1fae5;
+  --theme-selection: #a7f3d0;
+}
+
+html[data-theme="orange"] {
+  --theme-primary: #ea580c;
+  --theme-secondary: #f97316;
+  --theme-soft: #ffedd5;
+  --theme-selection: #fed7aa;
+}
+
+html[data-theme="slate"] {
+  --theme-primary: #475569;
+  --theme-secondary: #64748b;
+  --theme-soft: #f1f5f9;
+  --theme-selection: #cbd5e1;
+}
+
+/* Terapkan tema pada utility warna aksen violet */
+html[data-theme] .bg-violet-600 {
+  background-color: var(--theme-primary) !important;
+}
+
+html[data-theme] .bg-violet-500 {
+  background-color: var(--theme-secondary) !important;
+}
+
+html[data-theme] .bg-violet-50,
+html[data-theme] .bg-violet-100,
+html[data-theme] .bg-violet-200 {
+  background-color: var(--theme-soft) !important;
+}
+
+html[data-theme] .bg-violet-50\/20 {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-soft) 20%,
+    transparent
+  ) !important;
+}
+
+html[data-theme] .text-violet-600,
+html[data-theme] .text-violet-500,
+html[data-theme] .text-violet-700,
+html[data-theme] .text-violet-800,
+html[data-theme] .text-violet-400,
+html[data-theme] .text-violet-300 {
+  color: var(--theme-primary) !important;
+}
+
+html[data-theme] .border-violet-200,
+html[data-theme] .border-violet-300,
+html[data-theme] .border-violet-500,
+html[data-theme] .border-violet-600,
+html[data-theme] .border-violet-400 {
+  border-color: var(--theme-primary) !important;
+}
+
+html[data-theme] .ring-violet-100,
+html[data-theme] .ring-violet-200,
+html[data-theme] .ring-violet-300 {
+  --tw-ring-color: var(--theme-soft) !important;
+}
+
+html[data-theme] .text-violet-100 {
+  color: var(--theme-soft) !important;
+}
+
+html[data-theme] .hover\:bg-violet-700:hover {
+  background-color: var(--theme-primary) !important;
+  filter: brightness(0.9);
+}
+
+html[data-theme] .hover\:bg-violet-600:hover {
+  background-color: var(--theme-primary) !important;
+  filter: brightness(0.9);
+}
+
+html[data-theme] .hover\:bg-violet-50:hover,
+html[data-theme] .hover\:bg-violet-100:hover {
+  background-color: var(--theme-soft) !important;
+}
+
+html[data-theme] .hover\:text-violet-600:hover,
+html[data-theme] .hover\:text-violet-700:hover,
+html[data-theme] .hover\:text-violet-800:hover {
+  color: var(--theme-primary) !important;
+}
+
+html[data-theme] .hover\:border-violet-400:hover {
+  border-color: var(--theme-primary) !important;
+}
+
+html[data-theme] .hover\:border-violet-200:hover,
+html[data-theme] .hover\:border-violet-300:hover {
+  border-color: var(--theme-primary) !important;
+}
+
+html[data-theme] .accent-violet-600 {
+  accent-color: var(--theme-primary) !important;
+}
+
 ::selection {
-  background: #ded6ff;
-  color: #4c35a5;
+  background: var(--theme-selection);
+  color: var(--foreground);
+}
+
+html[data-dark="true"] {
+  --background: #151522;
+  --foreground: #f8fafc;
+  --dark-surface: #202033;
+  --dark-surface-muted: #292940;
+  --dark-surface-subtle: #303047;
+  --dark-border: #3b3b55;
+  --dark-border-soft: #33334b;
+  --dark-text: #f8fafc;
+  --dark-text-secondary: #cbd5e1;
+  --dark-text-muted: #9ca3af;
+}
+
+html[data-dark="true"] body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+html[data-dark="true"] .bg-white {
+  background-color: var(--dark-surface) !important;
+}
+
+html[data-dark="true"] .bg-gray-50,
+html[data-dark="true"] .bg-slate-50,
+html[data-dark="true"] .bg-slate-50\/70 {
+  background-color: var(--dark-surface-muted) !important;
+}
+
+html[data-dark="true"] .bg-gray-100,
+html[data-dark="true"] .bg-slate-100,
+html[data-dark="true"] .bg-slate-200 {
+  background-color: var(--dark-surface-subtle) !important;
+}
+
+html[data-dark="true"] .bg-violet-50,
+html[data-dark="true"] .bg-violet-100,
+html[data-dark="true"] .bg-violet-200 {
+  background-color: color-mix(in srgb, var(--theme-primary) 18%, var(--dark-surface)) !important;
+}
+
+html[data-dark="true"] .bg-violet-50\/20,
+html[data-dark="true"] .bg-slate-50\/20,
+html[data-dark="true"] .bg-blue-100,
+html[data-dark="true"] .bg-purple-100,
+html[data-dark="true"] .bg-pink-100,
+html[data-dark="true"] .bg-emerald-100,
+html[data-dark="true"] .bg-fuchsia-100,
+html[data-dark="true"] .bg-orange-100,
+html[data-dark="true"] .bg-red-50 {
+  background-color: var(--dark-surface-subtle) !important;
+}
+
+html[data-dark="true"] .text-gray-900,
+html[data-dark="true"] .text-gray-800,
+html[data-dark="true"] .text-slate-900,
+html[data-dark="true"] .text-slate-800 {
+  color: var(--dark-text) !important;
+}
+
+html[data-dark="true"] .text-gray-700,
+html[data-dark="true"] .text-gray-600,
+html[data-dark="true"] .text-slate-700,
+html[data-dark="true"] .text-slate-600 {
+  color: var(--dark-text-secondary) !important;
+}
+
+html[data-dark="true"] .text-gray-500,
+html[data-dark="true"] .text-slate-500,
+html[data-dark="true"] .text-gray-400,
+html[data-dark="true"] .text-slate-400 {
+  color: var(--dark-text-muted) !important;
+}
+
+html[data-dark="true"] .border-gray-100,
+html[data-dark="true"] .border-gray-200,
+html[data-dark="true"] .border-gray-300,
+html[data-dark="true"] .border-slate-100,
+html[data-dark="true"] .border-slate-200,
+html[data-dark="true"] .border-slate-300,
+html[data-dark="true"] .lms-soft-borders .border {
+  border-color: var(--dark-border-soft) !important;
+}
+
+html[data-dark="true"] input,
+html[data-dark="true"] textarea,
+html[data-dark="true"] select {
+  background-color: var(--dark-surface-muted);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+html[data-dark="true"] input::placeholder,
+html[data-dark="true"] textarea::placeholder {
+  color: var(--dark-text-muted);
+}
+
+html[data-dark="true"] option {
+  background-color: var(--dark-surface);
+  color: var(--dark-text);
+}
+
+html[data-dark="true"] .hover\:bg-gray-50:hover,
+html[data-dark="true"] .hover\:bg-gray-100:hover,
+html[data-dark="true"] .hover\:bg-gray-200:hover,
+html[data-dark="true"] .hover\:bg-slate-200:hover {
+  background-color: var(--dark-surface-subtle) !important;
 }

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { loadLmsPrograms, createLmsProgram } from "@/lib/lms-data";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import AppFooter from "@/components/layout/AppFooter";
 import {
   Search,
   BookOpen,
@@ -43,7 +45,7 @@ type Category = {
 };
 
 type Course = {
-  id: number;
+  id: string | number;
   title: string;
   category: string;
   description: string;
@@ -238,6 +240,8 @@ export default function LMSEcoursePage() {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [roleLoading, setRoleLoading] = useState(true);
+  const [lmsLoading, setLmsLoading] = useState(true);
+  const [lmsError, setLmsError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -284,7 +288,47 @@ export default function LMSEcoursePage() {
   const [categoriesList, setCategoriesList] =
     useState<Category[]>(initialCategories);
 
-  const [courseList, setCourseList] = useState<Course[]>(initialCourses);
+  const [courseList, setCourseList] = useState<Course[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadPrograms() {
+      setLmsLoading(true);
+      const result = await loadLmsPrograms({ publishedOnly: !isAdmin });
+
+      if (!active) return;
+
+      if (result.error) {
+        setLmsError(result.error);
+      } else {
+        const courses = Object.values(result.programs).map((program) => ({
+          id: program.id,
+          title: program.title,
+          category: program.category,
+          description: program.description,
+          lessons: `${program.modules.reduce(
+            (total, module) => total + module.materials.length,
+            0,
+          )} Materi`,
+          duration: "Program Pembelajaran",
+          details: program.description,
+          topics: program.modules.flatMap((module) =>
+            module.materials.map((material) => material.title),
+          ),
+        }));
+
+        setCourseList(courses);
+      }
+
+      setLmsLoading(false);
+    }
+
+    void loadPrograms();
+    return () => {
+      active = false;
+    };
+  }, [isAdmin]);
 
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
@@ -429,7 +473,7 @@ export default function LMSEcoursePage() {
     }
   };
 
-  const handleAddCourse = () => {
+  const handleAddCourse = async () => {
     if (!newTitle.trim() || !newCategory.trim()) {
       alert("Nama kelas dan kategori wajib diisi.");
       return;
@@ -447,14 +491,30 @@ export default function LMSEcoursePage() {
       return;
     }
 
-    const newCourse: Course = {
-      id: Date.now(),
+    const result = await createLmsProgram({
       title: newTitle.trim(),
       category: newCategory.trim(),
       description: newDescription.trim(),
-      lessons: "Belum ada materi",
+    });
+
+    if (result.error) {
+      setLmsError(result.error.message);
+      return;
+    }
+
+    if (!result.data) {
+      setLmsError("Program berhasil diproses tetapi data tidak dikembalikan.");
+      return;
+    }
+
+    const newCourse: Course = {
+      id: result.data.id,
+      title: result.data.title,
+      category: result.data.category,
+      description: result.data.description,
+      lessons: "0 Materi",
       duration: "Program Pembelajaran",
-      details: newDescription.trim(),
+      details: result.data.description,
       topics: [],
     };
 
@@ -470,7 +530,7 @@ export default function LMSEcoursePage() {
 
   return (
     <DashboardLayout dark={dark} setDark={setDark}>
-      <div className="mx-auto w-full max-w-[1450px] space-y-8 p-4 sm:p-6 lg:p-9">
+      <div className="lms-soft-borders mx-auto w-full max-w-[1450px] space-y-8 p-4 sm:p-6 lg:p-9">
         <section>
           <div className="mb-2 flex items-center gap-2 text-violet-600">
             <GraduationCap size={22} />
@@ -487,7 +547,13 @@ export default function LMSEcoursePage() {
         </section>
 
         {/* HERO */}
-        <section className="relative overflow-hidden rounded-[24px] bg-gradient-to-r from-violet-700 via-violet-600 to-indigo-500 p-7 text-white md:p-10">
+        <section
+          className="relative overflow-hidden rounded-[24px] p-7 text-white md:p-10"
+          style={{
+            background:
+              "linear-gradient(110deg, var(--theme-primary), var(--theme-secondary))",
+          }}
+        >
           <div className="relative z-10 max-w-2xl">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold">
               <Sparkles size={14} />
@@ -498,7 +564,7 @@ export default function LMSEcoursePage() {
               Kembangkan Potensimu Bersama Edusmart
             </h2>
 
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-violet-100">
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/90">
               Pelajari keterampilan baru, bangun kreativitas, dan kembangkan
               kemampuanmu sebagai digital creator.
             </p>
@@ -608,6 +674,12 @@ export default function LMSEcoursePage() {
             )}
           </div>
 
+          {lmsError && (
+            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              Gagal memuat data LMS: {lmsError}
+            </div>
+          )}
+
           {/* CATEGORY FILTER */}
           <div className="mb-6 flex flex-wrap gap-2">
             {["Semua Kelas", ...categoriesList.map((item) => item.name)].map(
@@ -630,7 +702,11 @@ export default function LMSEcoursePage() {
           </div>
 
           {/* COURSE CARDS */}
-          {filteredCourses.length > 0 ? (
+          {lmsLoading ? (
+            <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center text-sm text-gray-500">
+              Memuat katalog pembelajaran...
+            </div>
+          ) : filteredCourses.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {filteredCourses.map((course) => {
                 const category = categoriesList.find(
@@ -1277,6 +1353,9 @@ export default function LMSEcoursePage() {
             </div>
           </div>
         )}
+        <div className="mt-8">
+          <AppFooter dark={dark} />
+        </div>
       </div>
     </DashboardLayout>
   );
