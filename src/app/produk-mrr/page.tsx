@@ -247,8 +247,6 @@ export default function ProdukMRRPage() {
 
   const totalProductResources = driveFileTotal + nonDriveLinkCount;
 
-  const totalProductResources = driveFileTotal + nonDriveLinkCount;
-
   function getCategoryName(categoryId: string | null) {
     return (
       categories.find((item) => item.category_id === categoryId)?.name ??
