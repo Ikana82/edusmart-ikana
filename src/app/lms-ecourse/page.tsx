@@ -55,6 +55,22 @@ type Course = {
   topics: string[];
 };
 
+type LmsMaterialSummary = {
+  title: string;
+};
+
+type LmsModuleSummary = {
+  materials: LmsMaterialSummary[];
+};
+
+type LmsProgramSummary = {
+  id: string;
+  title: string;
+  category: string;
+  description: string | null;
+  modules: LmsModuleSummary[];
+};
+
 const iconOptions: { name: string; icon: LucideIcon }[] = [
   { name: "BookOpen", icon: BookOpen },
   { name: "Sparkles", icon: Sparkles },
@@ -302,19 +318,26 @@ export default function LMSEcoursePage() {
       if (result.error) {
         setLmsError(result.error);
       } else {
-        const courses = Object.values(result.programs).map((program) => ({
+        const programs = Object.values(
+          result.programs as Record<string, LmsProgramSummary>,
+        );
+
+        const courses: Course[] = programs.map((program) => ({
           id: program.id,
           title: program.title,
           category: program.category,
-          description: program.description,
+          description: program.description ?? "",
           lessons: `${program.modules.reduce(
-            (total, module) => total + module.materials.length,
+            (total: number, module: LmsModuleSummary) =>
+              total + module.materials.length,
             0,
           )} Materi`,
           duration: "Program Pembelajaran",
-          details: program.description,
-          topics: program.modules.flatMap((module) =>
-            module.materials.map((material) => material.title),
+          details: program.description ?? "",
+          topics: program.modules.flatMap((module: LmsModuleSummary) =>
+            module.materials.map(
+              (material: LmsMaterialSummary) => material.title,
+            ),
           ),
         }));
 

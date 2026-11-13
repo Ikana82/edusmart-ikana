@@ -1,13 +1,19 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import AppFooter from "@/components/layout/AppFooter";
 import { createClient } from "@/lib/supabase/client";
 import { loadLmsPrograms } from "@/lib/lms-data";
 import { getVideoSource } from "@/lib/video-url";
-import type { LearningMaterial, LearningModule, MaterialStatus, MaterialType } from "@/lib/learning-data";
+import type {
+  LearningMaterial,
+  LearningModule,
+  LearningProgram,
+  MaterialStatus,
+  MaterialType,
+} from "@/lib/learning-data";
 import { ArrowLeft, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -16,7 +22,7 @@ function ManageLearningContent() {
   const id = String(routeId);
   const router = useRouter();
   const [dark, setDark] = useState(false);
-  const [program, setProgram] = useState<Awaited<ReturnType<typeof loadLmsPrograms>>["programs"][string]>();
+  const [program, setProgram] = useState<LearningProgram>();
   const [access, setAccess] = useState<"checking" | "allowed" | "denied">("checking");
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
@@ -31,13 +37,13 @@ function ManageLearningContent() {
   const [articleContent, setArticleContent] = useState("");
   const [materialStatus, setMaterialStatus] = useState<MaterialStatus>("draft");
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     const result = await loadLmsPrograms();
     if (result.error) setError(result.error);
     const loaded = result.programs[id];
     setProgram(loaded);
-    if (!selectedId && loaded?.modules[0]) setSelectedId(loaded.modules[0].id);
-  };
+    setSelectedId((current) => current ?? loaded?.modules[0]?.id ?? null);
+  }, [id]);
 
   useEffect(() => {
     let mounted = true;
@@ -52,7 +58,7 @@ function ManageLearningContent() {
       await refresh();
     })();
     return () => { mounted = false; };
-  }, [id, router]);
+  }, [id, refresh, router]);
 
   const modules = program?.modules ?? [];
   const selected = modules.find((item) => String(item.id) === String(selectedId));
@@ -66,7 +72,7 @@ function ManageLearningContent() {
     const title = moduleTitle.trim();
     if (!title) return fail("Nama modul wajib diisi.");
     const supabase = createClient();
-    const result = editingModuleId
+    const result = editingModuleId !== null
       ? await supabase.from("lms_modules").update({ title }).eq("id", editingModuleId)
       : await supabase.from("lms_modules").insert({ program_id: id, title, position: modules.length });
     if (result.error) return fail(result.error.message);
@@ -96,11 +102,12 @@ function ManageLearningContent() {
     }
     const payload = { module_id: selected.id, title: materialTitle.trim(), type: materialType, duration: materialDuration.trim() || null, description: materialDescription.trim(), video_url: materialType === "video" ? materialUrl.trim() || null : null, content_url: materialType !== "video" ? materialUrl.trim() || null : null, article_content: materialType === "article" ? articleContent.trim() || null : null, status: materialStatus, position: editingMaterialId ? selected.materials.findIndex((item) => String(item.id) === String(editingMaterialId)) : selected.materials.length };
     const supabase = createClient();
-    const result = editingMaterialId ? await supabase.from("lms_materials").update(payload).eq("id", editingMaterialId) : await supabase.from("lms_materials").insert(payload);
+    const wasEditing = editingMaterialId !== null;
+    const result = wasEditing ? await supabase.from("lms_materials").update(payload).eq("id", editingMaterialId) : await supabase.from("lms_materials").insert(payload);
     if (result.error) return fail(result.error.message);
     clearMaterial();
     await refresh();
-    toast.success(editingMaterialId ? "Materi berhasil diperbarui." : "Materi berhasil ditambahkan.");
+    toast.success(wasEditing ? "Materi berhasil diperbarui." : "Materi berhasil ditambahkan.");
   };
 
   const removeMaterial = async (material: LearningMaterial) => {
